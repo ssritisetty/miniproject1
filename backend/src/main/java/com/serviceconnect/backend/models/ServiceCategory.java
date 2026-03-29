@@ -18,7 +18,7 @@ public class ServiceCategory {
   private String description;
   private String iconUrl;
 
-  public ServiceCategory() {}
+
 
   public ServiceCategory(String name, String description) {
     this.name = name;

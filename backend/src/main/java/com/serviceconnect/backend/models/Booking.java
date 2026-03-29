@@ -34,7 +34,7 @@ public class Booking {
   private Boolean isPaid = false;
   private Integer pointsUsed = 0;
 
-  public Booking() {}
+
 
   public Booking(User customer, ServiceProvider provider, LocalDateTime scheduledTime, String address, String description, Double totalAmount) {
     this.customer = customer;

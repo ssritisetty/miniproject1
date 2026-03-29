@@ -30,7 +30,7 @@ public class Review {
   private String comment;
   private LocalDateTime createdAt;
 
-  public Review() {}
+
 
   public Review(Booking booking, User customer, ServiceProvider provider, Integer rating, String comment) {
     this.booking = booking;
