@@ -31,7 +31,7 @@ public class ServiceProvider {
   private Boolean isVerified = false;
   private Boolean isAvailable = true;
 
-  public ServiceProvider() {}
+
 
   public ServiceProvider(User user, ServiceCategory category, String bio, String experience, Double hourlyRate) {
     this.user = user;
