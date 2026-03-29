@@ -13,7 +13,8 @@ WORKDIR /app
 COPY --from=frontend-build /app/frontend/dist /app/backend/src/main/resources/static
 COPY backend/ /app/backend/
 WORKDIR /app/backend
-# Ensure mvnw is executable
+# Ensure mvnw is executable and has Linux line endings
+RUN sed -i 's/\r$//' mvnw
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
