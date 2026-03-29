@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  /* Pastel Lilac/Lavender Aesthetic */
+  --color-primary-50: #faf5ff;
+  --color-primary-100: #f3e8ff;
+  --color-primary-200: #e9d5ff;
+  --color-primary-500: #b496d6;
+  --color-primary-600: #9871c8;
+  --color-primary-700: #7e52a8;
+  --color-primary-900: #4a2e6b;
+  
+  --color-secondary-500: #fbcfe8; /* Pastel Pink */
+  --color-dark-800: #1f2937;
+  --color-dark-900: #111827;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased font-sans selection:bg-primary-100 selection:text-primary-700;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+  
+  .glass-dark {
+    @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/30 shadow-2xl;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-400;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
