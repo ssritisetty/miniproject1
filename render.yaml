@@ -1,14 +1,8 @@
 services:
   - type: web
     name: service-connect
-    runtime: native
-    buildCommand: |
-      cd frontend && npm install --legacy-peer-deps && npm run build && cd .. && \
-      cd backend && ./mvnw clean package -DskipTests
-    startCommand: java -jar backend/target/backend-0.0.1-SNAPSHOT.jar
+    runtime: docker
+    plan: free
     envVars:
-      - key: JAVA_VERSION
-        value: 17
       - key: PORT
         value: 10000
-    plan: free
