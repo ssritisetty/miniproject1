@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Calendar, Clock, CreditCard, CheckCircle2, ChevronRight, ChevronLeft, AlertTriangle, Sparkles, Wallet, Banknote, MapPin } from 'lucide-react';
 import RewardScratchCard from './RewardScratchCard';
 
@@ -13,6 +13,14 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
     usePoints: false,
     emergencyReason: ''
   });
+  const contentRef = useRef(null);
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo(0, 0);
+    }
+  }, [step]);
 
   const availablePoints = currentUser.rewardPoints || 0;
   const rewardAmount = Math.floor(availablePoints / 50) * 5;
@@ -69,7 +77,7 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto flex-1 custom-scrollbar">
+        <div ref={contentRef} className="p-8 overflow-y-auto flex-1 custom-scrollbar">
           
           {step === 1 && (
             <div className="space-y-6 animate-slideIn">
