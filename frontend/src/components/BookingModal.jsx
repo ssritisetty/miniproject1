@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, CreditCard, CheckCircle2, ChevronRight, ChevronLeft, AlertTriangle, Sparkles, Wallet, Banknote } from 'lucide-react';
+import { X, Calendar, Clock, CreditCard, CheckCircle2, ChevronRight, ChevronLeft, AlertTriangle, Sparkles, Wallet, Banknote, MapPin } from 'lucide-react';
 import RewardScratchCard from './RewardScratchCard';
 
 const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
@@ -7,8 +7,8 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
   const [bookingData, setBookingData] = useState({
     date: '',
     timeSlot: '',
-    address: '123 Main St',
-    description: 'Need help as soon as possible.',
+    address: '',
+    description: '',
     paymentMethod: 'Cash on Delivery',
     usePoints: false,
     emergencyReason: ''
@@ -128,14 +128,17 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
             <div className="space-y-6 animate-slideIn">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                  Address
+                  <MapPin size={16} className="text-primary-600" /> Service Location Address
                 </label>
                 <input 
                   type="text" 
+                  required
+                  placeholder="Enter your complete address..."
                   value={bookingData.address}
                   onChange={(e) => setBookingData({...bookingData, address: e.target.value})}
-                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all font-medium"
                 />
+                <p className="mt-1.5 text-[10px] text-gray-400 font-medium">This is where the professional will arrive to serve you.</p>
               </div>
 
               <div>
@@ -291,7 +294,10 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
             {step < 4 ? (
               <button 
                 onClick={handleNext}
-                disabled={(step === 1 && (!bookingData.date || !bookingData.timeSlot)) || (step ===1 && isToday && !bookingData.emergencyReason)}
+                disabled={
+                  (step === 1 && (!bookingData.date || !bookingData.timeSlot || (isToday && !bookingData.emergencyReason))) || 
+                  (step === 2 && !bookingData.address)
+                }
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-black bg-primary-600 text-white hover:bg-primary-700 transition-all shadow-lg shadow-primary-200 disabled:opacity-30 disabled:shadow-none uppercase tracking-widest text-sm"
               >
                 Next Step <ChevronRight size={20} />
