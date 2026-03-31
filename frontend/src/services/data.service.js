@@ -17,6 +17,10 @@ const updateBookingStatus = (bookingId, status) => api.put(`/bookings/${bookingI
 const getProviderReviews = (providerId) => api.get(`/reviews/provider/${providerId}`);
 const createReview = (data) => api.post('/reviews', data);
 
+const deleteAccount = (id, password) => {
+  return api.delete(`/users/${id}`, { data: { password } });
+};
+
 const dataService = {
   getProviders,
   getProvidersByCategory,

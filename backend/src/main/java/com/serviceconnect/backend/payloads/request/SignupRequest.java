@@ -22,6 +22,10 @@ public class SignupRequest {
   @Size(min = 6, max = 40)
   private String password;
 
+  @NotBlank
+  @Size(min = 10, max = 15)
+  private String phoneNumber;
+
   private Long categoryId;
 
   // Getters and Setters
@@ -39,4 +43,7 @@ public class SignupRequest {
 
   public Long getCategoryId() { return categoryId; }
   public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
+
+  public String getPhoneNumber() { return phoneNumber; }
+  public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 }

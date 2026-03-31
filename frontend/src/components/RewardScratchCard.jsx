@@ -77,7 +77,7 @@ const RewardScratchCard = ({ amount, onRedeem, onSkip }) => {
         <div className="text-center p-4">
           <Sparkles className="mx-auto text-white mb-1 animate-bounce" size={24} />
           <h4 className="text-white text-xs font-bold uppercase tracking-widest opacity-80">Reward Unlocked</h4>
-          <p className="text-4xl font-black text-white drop-shadow-md">${amount}</p>
+          <p className="text-4xl font-black text-white drop-shadow-md">₹{amount}</p>
           <p className="text-white/90 text-sm font-semibold">Discount Applied!</p>
         </div>
 

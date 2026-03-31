@@ -3,7 +3,9 @@ package com.serviceconnect.backend.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.serviceconnect.backend.models.User;
 import com.serviceconnect.backend.repository.UserRepository;
@@ -30,5 +32,20 @@ public class UserService {
       if (updatedUser.getCity() != null) user.setCity(updatedUser.getCity());
       return userRepository.save(user);
     }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
+  }
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
+  @Transactional
+  public void deleteUser(Long id, String password) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+    
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      throw new RuntimeException("Error: Invalid password verification!");
+    }
+    
+    userRepository.delete(user);
   }
 }

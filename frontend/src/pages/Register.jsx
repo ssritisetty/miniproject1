@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { Lock, Mail, Loader2, User as UserIcon, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, Loader2, User as UserIcon, CheckCircle2, Phone } from 'lucide-react';
 import authService from '../services/auth.service';
 
 const Register = () => {
@@ -12,6 +12,7 @@ const Register = () => {
     username: '',
     email: '',
     password: '',
+    phoneNumber: '',
     role: initialRole
   });
   const [loading, setLoading] = useState(false);
@@ -70,6 +71,11 @@ const Register = () => {
       setLoading(false);
       return;
     }
+    if (!/^\d{10}$/.test(formData.phoneNumber.replace(/[\s-+]/g, '').slice(-10))) {
+      setError('Please enter a valid 10-digit Indian phone number.');
+      setLoading(false);
+      return;
+    }
 
     try {
       await authService.register(
@@ -77,7 +83,8 @@ const Register = () => {
         formData.email,
         formData.password,
         [formData.role],
-        formData.role === 'provider' ? selectedCategory : null
+        formData.role === 'provider' ? selectedCategory : null,
+        formData.phoneNumber
       );
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
@@ -223,6 +230,25 @@ const Register = () => {
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   placeholder="you@example.com"
                   value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="phoneNumber">Phone Number (India)</label>
+              <div className="relative rounded-lg shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="text"
+                  required
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  placeholder="+91 98765 43210"
+                  value={formData.phoneNumber}
                   onChange={handleChange}
                 />
               </div>

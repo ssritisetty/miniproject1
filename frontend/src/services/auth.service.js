@@ -15,13 +15,14 @@ const logout = () => {
   localStorage.removeItem('user');
 };
 
-const register = async (username, email, password, roles, categoryId) => {
+const register = async (username, email, password, roles, categoryId, phoneNumber) => {
   return api.post('/auth/signup', {
     username,
     email,
     password,
     roles,
     categoryId: categoryId ? parseInt(categoryId, 10) : null,
+    phoneNumber
   });
 };
 

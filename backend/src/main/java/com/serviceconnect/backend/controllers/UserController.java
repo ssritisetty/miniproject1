@@ -6,7 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.serviceconnect.backend.models.User;
+import com.serviceconnect.backend.payloads.response.MessageResponse;
 import com.serviceconnect.backend.services.UserService;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,6 +34,21 @@ public class UserController {
       return ResponseEntity.ok(updatedUser);
     } catch (RuntimeException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('CUSTOMER') or hasRole('PROVIDER') or hasRole('ADMIN')")
+  public ResponseEntity<?> deleteUserAccount(@PathVariable Long id, @RequestBody Map<String, String> request) {
+    try {
+      String password = request.get("password");
+      if (password == null || password.isEmpty()) {
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required for verification!"));
+      }
+      userService.deleteUser(id, password);
+      return ResponseEntity.ok(new MessageResponse("Account deleted successfully!"));
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
     }
   }
 }

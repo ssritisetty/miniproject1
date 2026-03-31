@@ -244,19 +244,19 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 font-medium italic">Service Rate (2 hrs):</span>
-                    <span className="text-gray-900 font-bold">${totalAmount.toFixed(2)}</span>
+                    <span className="text-gray-900 font-bold">₹{totalAmount.toFixed(2)}</span>
                   </div>
                   
                   {bookingData.usePoints && (
                     <div className="flex justify-between text-sm text-green-600 font-bold">
                        <span className="flex items-center gap-1 italic"><Sparkles size={14} /> Scratch Reward:</span>
-                       <span>-${rewardAmount.toFixed(2)}</span>
+                       <span>-₹{rewardAmount.toFixed(2)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between pt-4 border-t border-dashed border-gray-300">
                     <span className="text-xl font-black text-gray-900 uppercase">Total Amount:</span>
-                    <span className="text-2xl font-black text-primary-600">${finalAmount.toFixed(2)}</span>
+                    <span className="text-2xl font-black text-primary-600">₹{finalAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

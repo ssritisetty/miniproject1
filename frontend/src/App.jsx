@@ -23,6 +23,16 @@ const ProtectedRoute = ({ children, role }) => {
   return children;
 };
 
+const PublicRoute = ({ children }) => {
+  const user = authService.getCurrentUser();
+  if (user) {
+    if (user.roles.includes('ROLE_ADMIN')) return <Navigate to="/admin/dashboard" />;
+    if (user.roles.includes('ROLE_PROVIDER')) return <Navigate to="/provider/dashboard" />;
+    return <Navigate to="/customer/dashboard" />;
+  }
+  return children;
+};
+
 
 function App() {
   return (
@@ -32,8 +42,8 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           
           <Route 
             path="/admin/dashboard" 
