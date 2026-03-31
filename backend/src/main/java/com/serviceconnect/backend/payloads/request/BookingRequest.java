@@ -16,6 +16,8 @@ public class BookingRequest {
   private String description;
   private Double totalAmount;
   private Boolean usePoints = false;
+  private String paymentMethod;
+  private String emergencyReason;
 
   // Getters and Setters
   public Long getCustomerId() { return customerId; }
@@ -38,4 +40,10 @@ public class BookingRequest {
 
   public Boolean getUsePoints() { return usePoints; }
   public void setUsePoints(Boolean usePoints) { this.usePoints = usePoints; }
+
+  public String getPaymentMethod() { return paymentMethod; }
+  public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+  public String getEmergencyReason() { return emergencyReason; }
+  public void setEmergencyReason(String emergencyReason) { this.emergencyReason = emergencyReason; }
 }

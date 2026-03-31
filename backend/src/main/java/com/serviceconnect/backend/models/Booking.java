@@ -33,6 +33,8 @@ public class Booking {
   private Double totalAmount;
   private Boolean isPaid = false;
   private Integer pointsUsed = 0;
+  private String paymentMethod;
+  private String emergencyReason;
 
 
 
@@ -79,4 +81,10 @@ public class Booking {
 
   public Integer getPointsUsed() { return pointsUsed; }
   public void setPointsUsed(Integer pointsUsed) { this.pointsUsed = pointsUsed; }
+
+  public String getPaymentMethod() { return paymentMethod; }
+  public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+  public String getEmergencyReason() { return emergencyReason; }
+  public void setEmergencyReason(String emergencyReason) { this.emergencyReason = emergencyReason; }
 }

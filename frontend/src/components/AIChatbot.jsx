@@ -1,13 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
 
-const AIChatbot = () => {
+import dataService from '../services/data.service';
+
+const AIChatbot = ({ providers: initialProviders = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [providers, setProviders] = useState(initialProviders);
   const [messages, setMessages] = useState([
-    { text: "Hi! I'm your ServiceConnect AI Assistant. How can I help you today?", isBot: true }
+    { text: "Hi! I'm your ServiceConnect AI Assistant. I know everything about our professionals. Ask me anything!", isBot: true }
   ]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (initialProviders && initialProviders.length > 0) {
+      setProviders(initialProviders);
+    } else {
+      // Internal fetch if not provided via props
+      dataService.getProviders()
+        .then(res => setProviders(res.data))
+        .catch(err => console.error("Chatbot failed to fetch providers:", err));
+    }
+  }, [initialProviders]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,15 +43,34 @@ const AIChatbot = () => {
     setTimeout(() => {
       let botResponse = "I can help you find services, check prices, or guide you through bookings.";
       
-      // Simple AI Mock Logic
-      if (userMsg.includes("how do i book") || userMsg.includes("book a service")) {
-        botResponse = "Go to 'Browse Services' → choose a provider → select date → confirm booking.";
-      } else if (userMsg.includes("price") && userMsg.includes("plumb")) {
-        botResponse = "Estimated price for plumbing is ₹300 – ₹600 depending on the job complexity.";
+      // Dynamic Provider Matching Logic
+      const foundProviders = providers.filter(p => 
+        (p.user?.username || '').toLowerCase().includes(userMsg) ||
+        (p.category?.name || '').toLowerCase().includes(userMsg) ||
+        (p.bio || '').toLowerCase().includes(userMsg)
+      );
+
+      if (userMsg.includes("best") || userMsg.includes("top rated") || userMsg.includes("highest rating")) {
+        const best = [...providers].sort((a, b) => b.rating - a.rating)[0];
+        if (best) {
+          botResponse = `The top-rated professional is ${best.user?.username} (${best.category?.name}) with a rating of ${best.rating.toFixed(1)} stars! They charge $${best.hourlyRate}/hr.`;
+        }
+      } else if (userMsg.includes("cheapest") || userMsg.includes("lowest price") || userMsg.includes("budget")) {
+        const cheapest = [...providers].sort((a, b) => a.hourlyRate - b.hourlyRate)[0];
+        if (cheapest) {
+          botResponse = `${cheapest.user?.username} offers the most affordable rate at just $${cheapest.hourlyRate} per hour for ${cheapest.category?.name} services.`;
+        }
+      } else if (foundProviders.length > 0 && (userMsg.includes("who") || userMsg.includes("tell me about") || userMsg.includes("price of"))) {
+        const p = foundProviders[0];
+        botResponse = `${p.user?.username} is an expert in ${p.category?.name}. They have ${p.experience || 'years of'} experience and a rating of ${p.rating.toFixed(1)}. Their hourly rate is $${p.hourlyRate}. Would you like to book them?`;
+      } else if (userMsg.includes("how do i book") || userMsg.includes("book a service") || userMsg.includes("booking process")) {
+        botResponse = "It's easy! 1. Choose a provider. 2. Select your date and time (mention if it's an emergency). 3. Apply your Reward Scratch Card for discounts. 4. Choose your payment method (UPI, Net Banking, or Cash). 5. Confirm!";
+      } else if (userMsg.includes("reward") || userMsg.includes("scratch card") || userMsg.includes("points")) {
+        botResponse = "You earn 50 points for every completed booking! Once you have points, you can use our new interactive Scratch Card during the booking process to unlock instant discounts.";
       } else if (userMsg.includes("emergency") || userMsg.includes("urgent")) {
-        botResponse = "If this is an emergency (like heavy leaking or electrical issues), please use our smart search to get providers available within 1 hour.";
+        botResponse = "For emergencies, select 'Today' as your booking date. You'll be asked for an emergency reason, and we'll prioritize your request for immediate dispatch!";
       } else if (userMsg.includes("hello") || userMsg.includes("hi")) {
-        botResponse = "Hello! What service are you looking for today?";
+        botResponse = "Hello! I can tell you about our " + providers.length + " active service professionals. Who are you looking for?";
       }
 
       setMessages(prev => [...prev, { text: botResponse, isBot: true }]);

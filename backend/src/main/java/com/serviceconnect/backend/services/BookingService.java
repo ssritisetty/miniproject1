@@ -74,6 +74,8 @@ public class BookingService {
     Booking booking = new Booking(customer, provider, scheduledTime,
         req.getAddress(), req.getDescription(), finalAmount);
     booking.setPointsUsed(pointsUsed);
+    booking.setPaymentMethod(req.getPaymentMethod());
+    booking.setEmergencyReason(req.getEmergencyReason());
     return bookingRepository.save(booking);
   }
 

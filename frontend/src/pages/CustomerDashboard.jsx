@@ -8,6 +8,7 @@ import WeatherWidget from '../components/WeatherWidget';
 import ChatWidget from '../components/ChatWidget';
 import GpsTracker from '../components/GpsTracker';
 import BiddingSystem from '../components/BiddingSystem';
+import BookingModal from '../components/BookingModal';
 
 const CustomerDashboard = () => {
   const currentUser = authService.getCurrentUser();
@@ -31,6 +32,7 @@ const CustomerDashboard = () => {
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [reviewBookingId, setReviewBookingId] = useState(null);
   const [activeChatBooking, setActiveChatBooking] = useState(null);
+  const [bookingProvider, setBookingProvider] = useState(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -96,40 +98,35 @@ const CustomerDashboard = () => {
     }
   };
 
-  const handleBook = async (providerId, provider) => {
-    const address = window.prompt("Enter your service address:", "123 Main St");
-    if (!address) return;
-    const description = window.prompt("Describe the issue:", "Need help as soon as possible.");
-    if (!description) return;
+  const handleBook = (providerId, provider) => {
+    setBookingProvider(provider);
+  };
 
+  const finalizeBooking = async (bookingData) => {
     try {
-      let usePoints = false;
-      const availablePoints = currentUser.rewardPoints || 0;
-      
-      if (availablePoints >= 50) {
-        const discount = Math.floor(availablePoints / 50) * 5;
-        if (window.confirm(`You have ${availablePoints} reward points! Would you like to use them for a $${discount} discount?`)) {
-          usePoints = true;
-        }
-      }
+      const scheduledDateTime = new Date(`${bookingData.date}T${bookingData.timeSlot.split(' ')[0]}:00`).toISOString();
 
       const res = await dataService.createBooking({
         customerId: currentUser.id,
-        providerId: providerId,
-        scheduledTime: new Date(Date.now() + 86400000).toISOString(), 
-        address: address,
-        description: description,
-        totalAmount: provider.hourlyRate ? provider.hourlyRate * 2 : 100.0,
-        usePoints: usePoints
+        providerId: bookingProvider.id,
+        scheduledTime: scheduledDateTime,
+        address: bookingData.address,
+        description: bookingData.description,
+        totalAmount: (bookingProvider.hourlyRate ? bookingProvider.hourlyRate * 2 : 100.0),
+        usePoints: bookingData.usePoints,
+        paymentMethod: bookingData.paymentMethod,
+        emergencyReason: bookingData.emergencyReason
       });
 
-      // Update local storage if points were used/earned
-      if (usePoints) {
+      // Update local storage if points were used
+      if (bookingData.usePoints) {
+        const availablePoints = currentUser.rewardPoints || 0;
         const updatedUser = { ...currentUser, rewardPoints: Math.max(0, availablePoints - (Math.floor(availablePoints / 50) * 50)) };
         localStorage.setItem("user", JSON.stringify(updatedUser));
       }
 
-      alert('Booking created successfully!' + (usePoints ? ' Discount was applied.' : '') + ' Check your Bookings tab.');
+      alert('Booking created successfully! Your professional is notified.');
+      setBookingProvider(null);
       fetchCustomerBookings();
     } catch (err) {
       alert('Failed to create booking: ' + (err.response?.data?.message || err.message));
@@ -423,6 +420,15 @@ const CustomerDashboard = () => {
           currentUser={currentUser} 
           recipientName={activeChatBooking.provider?.user?.username} 
           onClose={() => setActiveChatBooking(null)} 
+        />
+      )}
+
+      {bookingProvider && (
+        <BookingModal 
+          provider={bookingProvider} 
+          currentUser={currentUser}
+          onClose={() => setBookingProvider(null)}
+          onConfirm={finalizeBooking}
         />
       )}
     </div>
