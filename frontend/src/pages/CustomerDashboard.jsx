@@ -246,8 +246,8 @@ const CustomerDashboard = () => {
                       <div className="p-6 pt-5">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <h3 className="font-bold text-lg text-gray-900">{p.user?.username || 'Service Pro'}</h3>
-                            <p className="text-primary-700 font-semibold text-sm">{p.category?.name || 'General Service'}</p>
+                            <h3 className="font-bold text-lg text-gray-900">{p.category?.name || 'Service Pro'}</h3>
+                            <p className="text-primary-700 font-medium text-xs">@{p.user?.username || 'pro'}</p>
                           </div>
                           <div className="flex items-center gap-1 bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full text-xs font-bold border border-yellow-200">
                             <Star size={12} className="fill-yellow-500 text-yellow-500" />
@@ -290,8 +290,8 @@ const CustomerDashboard = () => {
                       <div className="p-6 pt-4">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <h3 className="font-bold text-lg text-gray-900">{p.user?.username || 'Service Pro'}</h3>
-                            <p className="text-primary-600 font-medium text-sm">{p.category?.name || 'General Service'}</p>
+                            <h3 className="font-bold text-lg text-gray-900">{p.category?.name || 'Service Pro'}</h3>
+                            <p className="text-primary-600 font-medium text-xs">@{p.user?.username || 'pro'}</p>
                           </div>
                           <div className="flex items-center gap-1 bg-yellow-50 text-yellow-700 px-2.5 py-1 rounded-full text-xs font-bold border border-yellow-200">
                             <Star size={12} className="fill-yellow-500 text-yellow-500" />

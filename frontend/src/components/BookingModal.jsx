@@ -40,8 +40,8 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
         <div className="bg-gradient-to-r from-primary-600 to-indigo-700 p-6 text-white shrink-0">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-2xl font-bold">Booking with {provider.user?.username}</h2>
-              <p className="text-white/80 text-sm">{provider.category?.name} Expert</p>
+              <h2 className="text-2xl font-bold">{provider.category?.name || 'Service'} Booking</h2>
+              <p className="text-white/80 text-xs mt-0.5">with @{provider.user?.username}</p>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/20 rounded-full transition-colors">
               <X size={24} />

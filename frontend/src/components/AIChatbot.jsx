@@ -53,16 +53,16 @@ const AIChatbot = ({ providers: initialProviders = [] }) => {
       if (userMsg.includes("best") || userMsg.includes("top rated") || userMsg.includes("highest rating")) {
         const best = [...providers].sort((a, b) => b.rating - a.rating)[0];
         if (best) {
-          botResponse = `The top-rated professional is ${best.user?.username} (${best.category?.name}) with a rating of ${best.rating.toFixed(1)} stars! They charge ₹${best.hourlyRate}/hr.`;
+          botResponse = `The top-rated professional is ${best.category?.name} (${best.user?.username}) with a rating of ${best.rating.toFixed(1)} stars! They charge ₹${best.hourlyRate}/hr.`;
         }
       } else if (userMsg.includes("cheapest") || userMsg.includes("lowest price") || userMsg.includes("budget")) {
         const cheapest = [...providers].sort((a, b) => a.hourlyRate - b.hourlyRate)[0];
         if (cheapest) {
-          botResponse = `${cheapest.user?.username} offers the most affordable rate at just ₹${cheapest.hourlyRate} per hour for ${cheapest.category?.name} services.`;
+          botResponse = `${cheapest.category?.name} (${cheapest.user?.username}) offers the most affordable rate at just ₹${cheapest.hourlyRate} per hour.`;
         }
       } else if (foundProviders.length > 0 && (userMsg.includes("who") || userMsg.includes("tell me about") || userMsg.includes("price of"))) {
         const p = foundProviders[0];
-        botResponse = `${p.user?.username} is an expert in ${p.category?.name}. They have ${p.experience || 'years of'} experience and a rating of ${p.rating.toFixed(1)}. Their hourly rate is ₹${p.hourlyRate}. Would you like to book them?`;
+        botResponse = `${p.category?.name} (${p.user?.username}) is an expert. They have ${p.experience || 'years of'} experience and a rating of ${p.rating.toFixed(1)}. Their hourly rate is ₹${p.hourlyRate}. Would you like to book them?`;
       }
  else if (userMsg.includes("how do i book") || userMsg.includes("book a service") || userMsg.includes("booking process")) {
         botResponse = "It's easy! 1. Choose a provider. 2. Select your date and time (mention if it's an emergency). 3. Apply your Reward Scratch Card for discounts. 4. Choose your payment method (UPI, Net Banking, or Cash). 5. Confirm!";
