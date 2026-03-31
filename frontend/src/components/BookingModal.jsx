@@ -274,6 +274,11 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
                   <p className="text-green-900 font-black">{bookingData.paymentMethod}</p>
                 </div>
               </div>
+
+              <div className="bg-primary-50/50 p-4 rounded-2xl text-xs">
+                  <p className="text-primary-400 font-bold uppercase tracking-tight mb-1">Service Address</p>
+                  <p className="text-primary-900 font-black">{bookingData.address || 'No address provided'}</p>
+              </div>
             </div>
           )}
 
