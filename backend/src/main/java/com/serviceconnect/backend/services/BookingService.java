@@ -97,16 +97,25 @@ public class BookingService {
   public Booking updateStatus(Long bookingId, EBookingStatus status) {
     Booking booking = bookingRepository.findById(bookingId)
         .orElseThrow(() -> new RuntimeException("Booking not found"));
-    EBookingStatus oldStatus = booking.getStatus();
     booking.setStatus(status);
+    return bookingRepository.save(booking);
+  }
+
+  public Booking payBooking(Long bookingId) {
+    Booking booking = bookingRepository.findById(bookingId)
+        .orElseThrow(() -> new RuntimeException("Booking not found"));
     
-    // Award points on completion
-    if (status == EBookingStatus.COMPLETED && oldStatus != EBookingStatus.COMPLETED) {
-      User customer = booking.getCustomer();
-      customer.setRewardPoints(customer.getRewardPoints() + 50);
-      userRepository.save(customer);
+    if (booking.getIsPaid()) {
+      throw new RuntimeException("Booking is already paid");
     }
-    
+
+    booking.setIsPaid(true);
+
+    // Award points on successful payment
+    User customer = booking.getCustomer();
+    customer.setRewardPoints(customer.getRewardPoints() + 50);
+    userRepository.save(customer);
+
     return bookingRepository.save(booking);
   }
 }

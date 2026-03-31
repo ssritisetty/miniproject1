@@ -12,6 +12,7 @@ const getCustomerBookings = (customerId) => api.get(`/bookings/customer/${custom
 const getProviderBookings = (providerId) => api.get(`/bookings/provider/${providerId}`);
 const createBooking = (data) => api.post('/bookings', data);
 const updateBookingStatus = (bookingId, status) => api.put(`/bookings/${bookingId}/status?status=${status}`);
+const payBooking = (bookingId) => api.put(`/bookings/${bookingId}/pay`);
 
 // Reviews
 const getProviderReviews = (providerId) => api.get(`/reviews/provider/${providerId}`);
@@ -29,6 +30,7 @@ const dataService = {
   getProviderBookings,
   createBooking,
   updateBookingStatus,
+  payBooking,
   getProviderReviews,
   createReview,
 };

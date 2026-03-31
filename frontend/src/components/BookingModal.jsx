@@ -37,7 +37,7 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
     { title: 'Schedule', icon: Calendar },
     { title: 'Details', icon: CreditCard },
     { title: 'Payment', icon: Wallet },
-    { title: 'Review', icon: CheckCircle2 }
+    { title: 'Status', icon: CheckCircle2 }
   ];
 
   return (
@@ -320,7 +320,7 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
                 onClick={() => onConfirm(bookingData)}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-black bg-gradient-to-r from-primary-600 to-indigo-600 text-white hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-primary-200 uppercase tracking-widest text-sm"
               >
-                Confirm & Pay <CheckCircle2 size={20} />
+                Confirm Request <CheckCircle2 size={20} />
               </button>
             )}
           </div>

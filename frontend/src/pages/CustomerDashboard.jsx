@@ -137,6 +137,16 @@ const CustomerDashboard = () => {
     }
   };
 
+  const handlePay = async (bookingId) => {
+    try {
+      await dataService.payBooking(bookingId);
+      alert('Payment confirmed! You have earned 50 reward points.');
+      fetchCustomerBookings();
+    } catch (err) {
+      alert('Payment failed: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
   const handleDeleteAccount = async () => {
     if (!deletePassword) {
       setDeleteError('Password is required.');
@@ -392,7 +402,16 @@ const CustomerDashboard = () => {
                     </button>
                   )}
 
-                  {b.status === 'COMPLETED' && (
+                  {b.status === 'COMPLETED' && !b.isPaid && (
+                    <button 
+                      onClick={() => handlePay(b.id)}
+                      className="w-full bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 rounded-xl py-2.5 px-4 font-bold text-sm flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle size={18} /> Confirm & Pay
+                    </button>
+                  )}
+
+                  {b.status === 'COMPLETED' && b.isPaid && (
                     <button 
                       onClick={() => setReviewBookingId(b.id)}
                       className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 rounded-xl py-2.5 px-4 font-bold text-sm flex items-center justify-center gap-2"

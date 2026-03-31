@@ -50,4 +50,14 @@ public class BookingController {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
+
+  @PutMapping("/{id}/pay")
+  @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
+  public ResponseEntity<?> payBooking(@PathVariable Long id) {
+    try {
+      return ResponseEntity.ok(bookingService.payBooking(id));
+    } catch (RuntimeException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+  }
 }
