@@ -207,6 +207,7 @@ const Register = () => {
                   required
                   minLength={3}
                   maxLength={20}
+                  autoComplete="username"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   placeholder="At least 3 characters"
                   value={formData.username}
@@ -227,6 +228,7 @@ const Register = () => {
                   name="email"
                   type="email"
                   required
+                  autoComplete="email"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   placeholder="you@example.com"
                   value={formData.email}
@@ -246,6 +248,7 @@ const Register = () => {
                   name="phoneNumber"
                   type="text"
                   required
+                  autoComplete="tel"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   placeholder="+91 98765 43210"
                   value={formData.phoneNumber}
@@ -267,6 +270,7 @@ const Register = () => {
                   required
                   minLength={6}
                   maxLength={40}
+                  autoComplete="new-password"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   placeholder="At least 6 characters"
                   value={formData.password}
