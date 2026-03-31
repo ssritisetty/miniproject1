@@ -59,7 +59,7 @@ const JobBoard = ({ providerId }) => {
                                 <span className="bg-primary-50 text-primary-700 text-[10px] font-bold uppercase px-2 py-0.5 rounded">
                                     {r.category?.name || 'Service'}
                                 </span>
-                                <span className="text-lg font-bold text-green-600">${r.budget}</span>
+                                <span className="text-lg font-bold text-green-600">₹{r.budget}</span>
                             </div>
                             <h3 className="font-bold text-gray-900 mb-1">Request #{r.id}</h3>
                             <p className="text-sm text-gray-600 line-clamp-2 mb-4">{r.description}</p>

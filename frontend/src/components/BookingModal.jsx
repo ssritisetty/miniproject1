@@ -175,7 +175,7 @@ const BookingModal = ({ provider, currentUser, onClose, onConfirm }) => {
                     </div>
                     <div>
                       <h4 className="font-black text-lg">Reward Applied! 🎁</h4>
-                      <p className="text-sm font-medium">Extra ${rewardAmount} discount added to your bill.</p>
+                      <p className="text-sm font-medium">Extra ₹{rewardAmount} discount added to your bill.</p>
                     </div>
                   </div>
                 )}

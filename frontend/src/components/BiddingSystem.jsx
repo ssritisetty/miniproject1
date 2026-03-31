@@ -100,7 +100,7 @@ const BiddingSystem = ({ userId, categories }) => {
                                 </select>
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Estimated Budget ($)</label>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Estimated Budget (₹)</label>
                                 <div className="relative">
                                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                     <input 
@@ -165,7 +165,7 @@ const BiddingSystem = ({ userId, categories }) => {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-2 w-full md:w-auto">
-                            <div className="text-2xl font-black text-gray-900 mb-2">${r.budget} <span className="text-[10px] font-medium text-gray-400">Budget</span></div>
+                            <div className="text-2xl font-black text-gray-900 mb-2">₹{r.budget} <span className="text-[10px] font-medium text-gray-400">Budget</span></div>
                             {!r.completed && (
                                 <button 
                                     onClick={() => handleViewBids(r.id)}
@@ -212,7 +212,7 @@ const BiddingSystem = ({ userId, categories }) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="text-2xl font-black text-primary-600">${bid.amount}</div>
+                                            <div className="text-2xl font-black text-primary-600">₹{bid.amount}</div>
                                         </div>
                                         <p className="text-sm text-gray-600 italic bg-white p-3 rounded-xl border border-gray-50 shadow-sm mb-4">
                                             "{bid.offerMessage}"
