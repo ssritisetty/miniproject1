@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Sparkles, Lock } from 'lucide-react';
 
 import dataService from '../services/data.service';
+import authService from '../services/auth.service';
 
 const AIChatbot = ({ providers: initialProviders = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,18 +11,22 @@ const AIChatbot = ({ providers: initialProviders = [] }) => {
     { text: "Hi! I'm your ServiceConnect AI Assistant. I know everything about our professionals. Ask me anything!", isBot: true }
   ]);
   const [input, setInput] = useState('');
+  const currentUser = authService.getCurrentUser();
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    if (!currentUser) {
+      setProviders([]);
+      return;
+    }
     if (initialProviders && initialProviders.length > 0) {
       setProviders(initialProviders);
     } else {
-      // Internal fetch if not provided via props
       dataService.getProviders()
         .then(res => setProviders(res.data))
         .catch(err => console.error("Chatbot failed to fetch providers:", err));
     }
-  }, [initialProviders]);
+  }, [initialProviders, currentUser]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,7 +55,10 @@ const AIChatbot = ({ providers: initialProviders = [] }) => {
         (p.bio || '').toLowerCase().includes(userMsg)
       );
 
-      if (userMsg.includes("best") || userMsg.includes("top rated") || userMsg.includes("highest rating")) {
+      // Guest Restriction Check
+      if (!currentUser) {
+        botResponse = "I'd love to help you find a professional, but professional details are exclusive to our community. Please log in or sign up to see who's available and starting booking!";
+      } else if (userMsg.includes("best") || userMsg.includes("top rated") || userMsg.includes("highest rating")) {
         const best = [...providers].sort((a, b) => b.rating - a.rating)[0];
         if (best) {
           botResponse = `The top-rated professional is ${best.category?.name} (${best.user?.username}) with a rating of ${best.rating.toFixed(1)} stars! They charge ₹${best.hourlyRate}/hr.`;
@@ -71,7 +79,7 @@ const AIChatbot = ({ providers: initialProviders = [] }) => {
       } else if (userMsg.includes("emergency") || userMsg.includes("urgent")) {
         botResponse = "For emergencies, select 'Today' as your booking date. You'll be asked for an emergency reason, and we'll prioritize your request for immediate dispatch!";
       } else if (userMsg.includes("hello") || userMsg.includes("hi")) {
-        botResponse = "Hello! I can tell you about our " + providers.length + " active service professionals. Who are you looking for?";
+        botResponse = "Hello! I can tell you about our " + (providers.length || "many") + " active service professionals. Who are you looking for?";
       }
 
       setMessages(prev => [...prev, { text: botResponse, isBot: true }]);

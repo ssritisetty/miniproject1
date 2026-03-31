@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Shield, Clock, Star, ArrowRight, CheckCircle2 } from 'lucide-react';
 
+import authService from '../services/auth.service';
 const Home = () => {
+  const currentUser = authService.getCurrentUser();
   const categories = [
     { title: 'Plumbing', icon: '🔧', color: 'bg-blue-100 text-blue-600' },
     { title: 'Electrical', icon: '⚡', color: 'bg-yellow-100 text-yellow-600' },
@@ -66,27 +68,44 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* Categories Section - Only for Logged In Users */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Popular Categories</h2>
             <div className="w-20 h-1.5 bg-primary-600 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((cat, idx) => (
-              <div 
-                key={idx}
-                className="bg-white p-6 rounded-2xl shadow-sm border border-transparent hover:border-primary-200 hover:shadow-md transition-all cursor-pointer group text-center"
-              >
-                <div className={`w-14 h-14 ${cat.color} rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                  {cat.icon}
+          {currentUser ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 animate-fadeIn">
+              {categories.map((cat, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-transparent hover:border-primary-200 hover:shadow-md transition-all cursor-pointer group text-center"
+                >
+                  <div className={`w-14 h-14 ${cat.color} rounded-xl flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                    {cat.icon}
+                  </div>
+                  <h3 className="font-semibold text-gray-900">{cat.title}</h3>
                 </div>
-                <h3 className="font-semibold text-gray-900">{cat.title}</h3>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-3xl p-12 shadow-xl border border-gray-100 max-w-4xl mx-auto relative overflow-hidden group">
+               <div className="absolute top-0 left-0 w-full h-full bg-gray-200/20 backdrop-blur-[2px] z-0"></div>
+               <div className="relative z-10">
+                  <div className="w-20 h-20 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Shield className="w-10 h-10" />
+                  </div>
+                  <h3 className="text-2xl font-black text-gray-900 mb-4 uppercase tracking-tighter">Community Access Restricted</h3>
+                  <p className="text-gray-600 mb-8 max-w-lg mx-auto font-medium">To maintain the quality and security of our services, professional profiles and categories are only visible to our registered members.</p>
+                  <div className="flex justify-center gap-4">
+                    <Link to="/register" className="bg-primary-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-primary-700 transition-all shadow-lg hover:scale-105 active:scale-95">Sign Up Now</Link>
+                    <Link to="/login" className="bg-white text-gray-700 border border-gray-200 px-8 py-3 rounded-xl font-bold hover:border-primary-600 hover:text-primary-600 transition-all">Login</Link>
+                  </div>
+               </div>
+            </div>
+          )}
         </div>
       </section>
 
