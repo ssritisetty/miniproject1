@@ -32,34 +32,13 @@ public class BookingService {
     ServiceProvider provider = providerRepository.findById(req.getProviderId())
         .orElseThrow(() -> new RuntimeException("Provider not found"));
         
-    double finalAmount = req.getTotalAmount();
-    int pointsUsed = 0;
-
-    if (req.getUsePoints() != null && req.getUsePoints() && customer.getRewardPoints() >= 50) {
-      // 50 points = $5 discount
-      int availablePoints = customer.getRewardPoints();
-      int possibleDiscountPoints = (availablePoints / 50) * 50; 
-      double discount = (possibleDiscountPoints / 50.0) * 5.0;
-      
-      if (discount > finalAmount) {
-        discount = Math.floor(finalAmount); 
-        possibleDiscountPoints = (int)(discount / 5.0) * 50;
-      }
-      
-      finalAmount -= discount;
-      pointsUsed = possibleDiscountPoints;
-      
-      customer.setRewardPoints(customer.getRewardPoints() - pointsUsed);
-      userRepository.save(customer);
-    }
-
+    double finalAmount = req.getTotalAmount() != null ? req.getTotalAmount() : (provider.getHourlyRate() != null ? provider.getHourlyRate() * 2 : 100.0);
+    
     // Parse scheduledTime string (ISO-8601, may end in 'Z')
     LocalDateTime scheduledTime = null;
     if (req.getScheduledTime() != null && !req.getScheduledTime().isEmpty()) {
       try {
-        // Remove trailing 'Z' or offset to parse as LocalDateTime
         String timeStr = req.getScheduledTime().replaceAll("Z$", "").replaceAll("\\+.*$", "");
-        // Remove milliseconds if present beyond 3 digits
         if (timeStr.contains(".") && timeStr.substring(timeStr.indexOf(".")).length() > 4) {
           timeStr = timeStr.substring(0, timeStr.indexOf(".") + 4);
         }
@@ -73,8 +52,8 @@ public class BookingService {
 
     Booking booking = new Booking(customer, provider, scheduledTime,
         req.getAddress(), req.getDescription(), finalAmount);
-    booking.setPointsUsed(pointsUsed);
-    booking.setPaymentMethod(req.getPaymentMethod());
+    booking.setPointsUsed(0);
+    booking.setPaymentMethod("Pending");
     booking.setEmergencyReason(req.getEmergencyReason());
     return bookingRepository.save(booking);
   }
@@ -101,7 +80,7 @@ public class BookingService {
     return bookingRepository.save(booking);
   }
 
-  public Booking payBooking(Long bookingId) {
+  public Booking payBooking(Long bookingId, com.serviceconnect.backend.payloads.request.PaymentRequest req) {
     Booking booking = bookingRepository.findById(bookingId)
         .orElseThrow(() -> new RuntimeException("Booking not found"));
     
@@ -109,12 +88,35 @@ public class BookingService {
       throw new RuntimeException("Booking is already paid");
     }
 
-    booking.setIsPaid(true);
-
-    // Award points on successful payment
     User customer = booking.getCustomer();
+    double finalAmount = booking.getTotalAmount();
+    int pointsUsed = 0;
+
+    // Handle point deduction
+    if (req.getUsePoints() != null && req.getUsePoints() && customer.getRewardPoints() >= 50) {
+      int availablePoints = customer.getRewardPoints();
+      int possibleDiscountPoints = (availablePoints / 50) * 50; 
+      double discount = (possibleDiscountPoints / 50.0) * 5.0;
+      
+      if (discount > finalAmount) {
+        discount = Math.floor(finalAmount); 
+        possibleDiscountPoints = (int)(discount / 5.0) * 50;
+      }
+      
+      finalAmount -= discount;
+      pointsUsed = possibleDiscountPoints;
+      
+      customer.setRewardPoints(customer.getRewardPoints() - pointsUsed);
+    }
+
+    // Award bonus points for booking completion (50 points)
     customer.setRewardPoints(customer.getRewardPoints() + 50);
     userRepository.save(customer);
+
+    booking.setTotalAmount(finalAmount);
+    booking.setPointsUsed(pointsUsed);
+    booking.setPaymentMethod(req.getPaymentMethod());
+    booking.setIsPaid(true);
 
     return bookingRepository.save(booking);
   }

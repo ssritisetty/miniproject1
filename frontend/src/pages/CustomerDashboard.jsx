@@ -9,6 +9,7 @@ import ChatWidget from '../components/ChatWidget';
 import GpsTracker from '../components/GpsTracker';
 import BiddingSystem from '../components/BiddingSystem';
 import BookingModal from '../components/BookingModal';
+import PaymentModal from '../components/PaymentModal';
 
 const CustomerDashboard = () => {
   const currentUser = authService.getCurrentUser();
@@ -37,6 +38,7 @@ const CustomerDashboard = () => {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [payBookingData, setPayBookingData] = useState(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -137,11 +139,28 @@ const CustomerDashboard = () => {
     }
   };
 
-  const handlePay = async (bookingId) => {
+  const handlePay = async (paymentData) => {
     try {
-      await dataService.payBooking(bookingId);
-      alert('Payment confirmed! You have earned 50 reward points.');
-      fetchCustomerBookings();
+      await dataService.payBooking(payBookingData.id, paymentData);
+      
+      // Update local storage for points (UI should reflect this)
+      let updatedUser = { ...currentUser };
+      const currentPts = updatedUser.rewardPoints || 0;
+      
+      // Award 50 points, minus 50 if used
+      let nextPts = currentPts + 50;
+      if (paymentData.usePoints) {
+        nextPts -= 50;
+      }
+      
+      updatedUser.rewardPoints = Math.max(0, nextPts);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      
+      alert(`Payment of ₹${payBookingData.totalAmount - (paymentData.usePoints ? Math.floor((updatedUser.rewardPoints + (paymentData.usePoints ? 50 : 0)) / 50) * 5 : 0)} successful! You earned 50 points.`);
+      
+      setPayBookingData(null);
+      fetchCustomerBookings(); 
+      window.location.reload(); // Refresh to sync points across all components easily
     } catch (err) {
       alert('Payment failed: ' + (err.response?.data?.message || err.message));
     }
@@ -404,7 +423,7 @@ const CustomerDashboard = () => {
 
                   {b.status === 'COMPLETED' && !b.isPaid && (
                     <button 
-                      onClick={() => handlePay(b.id)}
+                      onClick={() => setPayBookingData(b)}
                       className="w-full bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 rounded-xl py-2.5 px-4 font-bold text-sm flex items-center justify-center gap-2"
                     >
                       <CheckCircle size={18} /> Confirm & Pay
@@ -513,6 +532,15 @@ const CustomerDashboard = () => {
           currentUser={currentUser}
           onClose={() => setBookingProvider(null)}
           onConfirm={finalizeBooking}
+        />
+      )}
+
+      {payBookingData && (
+        <PaymentModal
+          booking={payBookingData}
+          currentUser={currentUser}
+          onClose={() => setPayBookingData(null)}
+          onPaymentComplete={handlePay}
         />
       )}
 

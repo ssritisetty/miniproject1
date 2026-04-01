@@ -53,9 +53,9 @@ public class BookingController {
 
   @PutMapping("/{id}/pay")
   @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
-  public ResponseEntity<?> payBooking(@PathVariable Long id) {
+  public ResponseEntity<?> payBooking(@PathVariable Long id, @RequestBody com.serviceconnect.backend.payloads.request.PaymentRequest request) {
     try {
-      return ResponseEntity.ok(bookingService.payBooking(id));
+      return ResponseEntity.ok(bookingService.payBooking(id, request));
     } catch (RuntimeException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
